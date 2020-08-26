@@ -1,0 +1,39 @@
+version: '3'
+
+services: 
+  db: 
+    image: mysql:8
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    environment: 
+      MYSQL_USER: homestead
+      MYSQL_PASSWORD: homestead
+      MYSQL_ROOT_PASSWORD: secret
+      MYSQL_DATABASE: homestead
+    volumes:
+      - mysql8-data:/var/lib/mysql
+      - $PWD/config:/etc/mysql/conf.d
+    ports: 
+      - 3306:3306
+
+  phpmyadmin:
+    depends_on: 
+        - db
+    image: phpmyadmin/phpmyadmin:5
+    restart: always
+    environment:
+      PMA_HOST: db
+    ports:
+      - 8081:80
+
+  redis:
+    restart: always
+    container_name: redis
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-data:/data
+volumes: 
+    mysql8-data:
+    redis-data:
